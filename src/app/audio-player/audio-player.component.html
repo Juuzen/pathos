@@ -1,0 +1,109 @@
+<div class="player-page">
+  <!-- ─────────────── HEADER ─────────────── -->
+  <header class="player-header">
+    <div class="player-title">
+      <i class="pi pi-headphones"></i>
+      <span>Multi-Track Player</span>
+    </div>
+
+    <!-- Add tracks button -->
+    <label class="add-btn" pTooltip="Aggiungi tracce audio">
+      <i class="pi pi-plus"></i>
+      <span>Aggiungi traccia</span>
+      <input type="file" multiple accept="audio/*" hidden (change)="onFileSelected($event)" />
+    </label>
+  </header>
+
+  <!-- ─────────────── TRANSPORT BAR ─────────────── -->
+  <div class="transport-bar">
+    <div class="transport-controls">
+      <p-button
+        [icon]="isPlaying ? 'pi pi-pause' : 'pi pi-play'"
+        [rounded]="true"
+        [severity]="isPlaying ? 'warn' : 'success'"
+        [disabled]="tracks.length === 0 || !isReady"
+        (onClick)="playPause()"
+        pTooltip="{{ isPlaying ? 'Pausa' : 'Play' }}"
+      />
+      <p-button
+        icon="pi pi-stop"
+        [rounded]="true"
+        severity="secondary"
+        [disabled]="tracks.length === 0"
+        (onClick)="stop()"
+        pTooltip="Stop"
+      />
+    </div>
+
+    <div class="timeline-info">
+      <span class="time-label">{{ formatTime(currentTime) }}</span>
+      <div class="progress-track">
+        <p-progressbar
+          [value]="progressPercent"
+          [showValue]="false"
+          styleClass="timeline-progress"
+        />
+      </div>
+      <span class="time-label">{{ formatTime(duration) }}</span>
+    </div>
+  </div>
+
+  <!-- ─────────────── EMPTY STATE ─────────────── -->
+  @if (tracks.length === 0) {
+    <div class="empty-state">
+      <i class="pi pi-music empty-icon"></i>
+      <p>Nessuna traccia caricata</p>
+      <p class="empty-hint">Clicca "Aggiungi traccia" per iniziare</p>
+    </div>
+  }
+
+  <!-- ─────────────── WAVEFORM AREA ─────────────── -->
+  <div class="waveform-section">
+    <!-- Track labels column -->
+    @if (tracks.length > 0) {
+      <div class="track-labels">
+        @for (track of tracks; track track.id) {
+          <div class="track-label-row" [style.border-left-color]="track.color">
+            <div class="track-label-top">
+              <span class="track-name" [title]="track.name">{{ track.name }}</span>
+              <div class="track-actions">
+                <p-button
+                  [icon]="track.muted ? 'pi pi-volume-off' : 'pi pi-volume-up'"
+                  [rounded]="true"
+                  size="small"
+                  [severity]="track.muted ? 'danger' : 'secondary'"
+                  (onClick)="toggleMute(track.id)"
+                  [pTooltip]="track.muted ? 'Riattiva' : 'Muto'"
+                />
+                <p-button
+                  icon="pi pi-times"
+                  [rounded]="true"
+                  size="small"
+                  severity="danger"
+                  [text]="true"
+                  (onClick)="removeTrack(track.id)"
+                  pTooltip="Rimuovi"
+                />
+              </div>
+            </div>
+            <div class="track-volume-row">
+              <i class="pi pi-volume-down vol-icon"></i>
+              <p-slider
+                [ngModel]="track.volume * 100"
+                (ngModelChange)="onVolumeChange(track.id, $event)"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                styleClass="vol-slider"
+              />
+              <i class="pi pi-volume-up vol-icon"></i>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Waveform container -->
+    <div class="waveform-container" #waveformContainer></div>
+  </div>
+</div>
