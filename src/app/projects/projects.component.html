@@ -1,0 +1,44 @@
+<div class="projects-page">
+  <!-- ─────────────── HEADER ─────────────── -->
+  <header class="projects-header">
+    <div class="projects-title">
+      <i class="pi pi-folder-open"></i>
+      <span>Progetti</span>
+    </div>
+  </header>
+
+  <!-- ─────────────── CARD GRID ─────────────── -->
+  <div class="projects-grid">
+    @for (project of projects; track project.id) {
+      <div
+        class="project-card"
+        role="button"
+        tabindex="0"
+        (click)="openProject(project.id)"
+        (keydown.enter)="openProject(project.id)"
+      >
+        <div class="card-image-wrapper">
+          <img [src]="project.imageUrl" [alt]="project.name" class="card-image" />
+          <div class="card-image-overlay"></div>
+          <span class="track-badge">
+            <i class="pi pi-music"></i>
+            {{ project.tracks.length }} brani
+          </span>
+        </div>
+        <div class="card-body">
+          <h3 class="card-title">{{ project.name }}</h3>
+          <p class="card-desc">{{ project.description }}</p>
+        </div>
+        <div class="card-footer">
+          <p-button
+            label="Apri progetto"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            [text]="true"
+            size="small"
+          />
+        </div>
+      </div>
+    }
+  </div>
+</div>

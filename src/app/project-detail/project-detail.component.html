@@ -1,0 +1,129 @@
+@if (project) {
+  <div class="detail-page">
+    <!-- ─────────────── HEADER ─────────────── -->
+    <header class="detail-header">
+      <p-button
+        icon="pi pi-arrow-left"
+        label="Torna ai progetti"
+        [text]="true"
+        (onClick)="goBack()"
+      />
+    </header>
+
+    <!-- ─────────────── HERO ─────────────── -->
+    <div class="detail-hero">
+      <div class="hero-image-wrapper">
+        <img [src]="project.imageUrl" [alt]="project.name" class="hero-image" />
+        <div class="hero-overlay"></div>
+      </div>
+      <div class="hero-info">
+        <h1 class="hero-title">{{ project.name }}</h1>
+        <p class="hero-desc">{{ project.description }}</p>
+        <span class="hero-badge">
+          <i class="pi pi-music"></i>
+          {{ project.tracks.length }} brani
+        </span>
+      </div>
+    </div>
+
+    <!-- ─────────────── TRACK LIST ─────────────── -->
+    <section class="tracks-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="pi pi-list"></i>
+          Brani del progetto
+        </h2>
+        <p-button
+          icon="pi pi-plus"
+          label="Aggiungi tracce"
+          size="small"
+          (onClick)="openAddTracksDialog()"
+        />
+      </div>
+
+      <div class="track-list">
+        @for (track of project.tracks; track track.id; let i = $index) {
+          <div class="track-row">
+            <span class="track-index">{{ i + 1 }}</span>
+            <div class="track-color-dot" [style.background]="track.color"></div>
+            <span class="track-name">{{ track.name }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- ─────────────── ADD TRACKS DIALOG ─────────────── -->
+  <p-dialog
+    [(visible)]="showAddTracksDialog"
+    header="Aggiungi tracce audio"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{ width: '520px' }"
+    [breakpoints]="{ '768px': '95vw' }"
+    (onHide)="onDialogHide()"
+  >
+    <!-- Dropzone -->
+    <div
+      class="dropzone"
+      [class.drag-over]="isDragOver"
+      (dragenter)="onDragEnter($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      (drop)="onDrop($event)"
+      (click)="fileInput.click()"
+    >
+      <i class="pi pi-cloud-upload dropzone-icon"></i>
+      <p class="dropzone-text">Trascina i file audio qui</p>
+      <p class="dropzone-subtext">oppure clicca per selezionare</p>
+      <input
+        #fileInput
+        type="file"
+        accept="audio/*"
+        multiple
+        style="display: none"
+        (change)="onFileSelected($event)"
+      />
+    </div>
+
+    <!-- Queued Files List -->
+    @if (queuedFiles.length > 0) {
+      <ul class="queued-files">
+        @for (file of queuedFiles; track file.name; let i = $index) {
+          <li class="queued-file-item">
+            <i class="pi pi-headphones file-icon"></i>
+            <div class="file-info">
+              <span class="file-base-name">{{ getFileBaseName(file.name) }}</span>
+              <span class="file-ext-badge">{{ getFileExt(file.name) }}</span>
+            </div>
+            <p-button
+              icon="pi pi-times"
+              [text]="true"
+              severity="danger"
+              size="small"
+              (onClick)="removeQueuedFile(i)"
+            />
+          </li>
+        }
+      </ul>
+    }
+
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Annulla"
+        icon="pi pi-times"
+        [text]="true"
+        severity="secondary"
+        (onClick)="cancelDialog()"
+      />
+      <p-button
+        label="Conferma"
+        icon="pi pi-check"
+        [disabled]="queuedFiles.length === 0"
+        (onClick)="confirmDialog()"
+      />
+    </ng-template>
+  </p-dialog>
+}
