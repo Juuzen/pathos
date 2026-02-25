@@ -3,22 +3,41 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
+import { ButtonGroupModule } from 'primeng/buttongroup';
 import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormsModule } from '@angular/forms';
 
 import { ProjectService } from '../services/project.service';
-import { Project } from '../models/project.model';
+import { Project, Scene } from '../models/project.model';
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
-  imports: [CommonModule, ButtonModule, DialogModule],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    ButtonGroupModule,
+    DialogModule,
+    InputTextModule,
+    FormsModule,
+  ],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css',
 })
 export class ProjectDetailComponent implements OnInit {
   project: Project | undefined;
+  selectedScene: Scene | null = null;
+
+  isSceneViewerOpen = true;
+  sceneViewMode: 'row' | 'grid' = 'row';
 
   showAddTracksDialog = false;
+  showAddSceneDialog = false;
+
+  newSceneName = '';
+  newSceneDesc = '';
+
   queuedFiles: File[] = [];
   isDragOver = false;
   private dragCounter = 0;
@@ -33,9 +52,42 @@ export class ProjectDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.project = this.projectService.getProjectById(id);
+      if (this.project && this.project.scenes.length > 0) {
+        this.selectedScene = this.project.scenes[0];
+      }
     }
     if (!this.project) {
       this.router.navigate(['/projects']);
+    }
+  }
+
+  selectScene(scene: Scene): void {
+    this.selectedScene = scene;
+  }
+
+  toggleSceneViewer(): void {
+    this.isSceneViewerOpen = !this.isSceneViewerOpen;
+  }
+
+  toggleSceneViewMode(): void {
+    this.sceneViewMode = this.sceneViewMode === 'row' ? 'grid' : 'row';
+  }
+
+  openAddSceneDialog(): void {
+    this.newSceneName = '';
+    this.newSceneDesc = '';
+    this.showAddSceneDialog = true;
+  }
+
+  confirmAddScene(): void {
+    if (this.project && this.newSceneName.trim()) {
+      const newScene = this.projectService.addSceneToProject(
+        this.project.id,
+        this.newSceneName.trim(),
+        this.newSceneDesc.trim(),
+      );
+      this.selectedScene = newScene;
+      this.showAddSceneDialog = false;
     }
   }
 
@@ -118,6 +170,20 @@ export class ProjectDetailComponent implements OnInit {
 
   getFileExt(name: string): string {
     return name.split('.').pop()?.toUpperCase() ?? '';
+  }
+
+  getTotalTracks(): number {
+    if (!this.project) return 0;
+    return this.project.scenes.reduce((acc, scene) => acc + scene.tracks.length, 0);
+  }
+
+  getSceneTrackIndex(sceneIndex: number, trackIndex: number): number {
+    if (!this.project) return 0;
+    let index = 0;
+    for (let i = 0; i < sceneIndex; i++) {
+      index += this.project.scenes[i].tracks.length;
+    }
+    return index + trackIndex + 1;
   }
 
   private addFiles(fileList: FileList): void {

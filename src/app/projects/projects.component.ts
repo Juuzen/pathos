@@ -28,4 +28,8 @@ export class ProjectsComponent {
   openProject(id: string): void {
     this.router.navigate(['/projects', id]);
   }
+
+  getTotalTracks(project: Project): number {
+    return project.scenes.reduce((acc, scene) => acc + scene.tracks.length, 0);
+  }
 }

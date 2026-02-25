@@ -42,11 +42,7 @@
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(13, 15, 20, 0.3) 0%,
-    rgba(13, 15, 20, 0.95) 100%
-  );
+  background: linear-gradient(180deg, rgba(13, 15, 20, 0.3) 0%, rgba(13, 15, 20, 0.95) 100%);
 }
 
 .hero-info {
@@ -110,8 +106,204 @@
   color: #a78bfa;
 }
 
-.section-title .pi {
+/* ─── Scene Viewer Section ─── */
+.scene-viewer-section {
+  padding: 2rem;
+  background: #0d0f14;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.scene-viewer-section.is-open {
+  background: #12151c;
+  border-top-color: #1e2330;
+  border-bottom-color: #1e2330;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-actions .material-icons {
+  font-size: 1.1rem;
+}
+
+.scene-viewer-container {
+  overflow: hidden;
+  max-height: 2000px;
+  transition:
+    max-height 0.3s ease-in-out,
+    opacity 0.2s ease;
+  opacity: 1;
+}
+
+.scene-viewer-container.collapsed {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene-list-wrapper {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0.5rem 0 1.5rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #1e2330 transparent;
+}
+
+.scene-list-wrapper.grid-mode {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  overflow-x: visible;
+}
+
+/* ─── Scene Cards ─── */
+.scene-card {
+  flex: 0 0 180px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  background: #12151c;
+  border: 1px solid #1e2330;
+  border-radius: 12px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.scene-card:hover {
+  background: #1a1d27;
+  border-color: #6366f1;
+  transform: translateY(-4px);
+}
+
+.scene-card.active {
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+.add-card {
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  border: 2px dashed #1e2330;
+  background: transparent;
+}
+
+.add-card:hover {
+  border-style: solid;
+  border-color: #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.add-card i {
+  font-size: 1.5rem;
+  color: #6366f1;
+}
+
+.add-card span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.scene-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scene-card-name {
+  margin: 0;
   font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.scene-card-info {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.scene-card-footer {
+  margin-top: 1rem;
+}
+
+/* ─── Tracks Section ─── */
+.section-title-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-subtitle {
+  margin: 0.2rem 0 0;
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: #12151c;
+  border-radius: 12px;
+  color: #475569;
+  gap: 0.75rem;
+}
+
+.empty-state i {
+  font-size: 2rem;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* ─── Dialog Forms ─── */
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1rem 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.form-field input {
+  width: 100%;
 }
 
 /* ─── Track List ─── */

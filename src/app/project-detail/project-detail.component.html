@@ -21,37 +21,172 @@
         <p class="hero-desc">{{ project.description }}</p>
         <span class="hero-badge">
           <i class="pi pi-music"></i>
-          {{ project.tracks.length }} brani
+          {{ getTotalTracks() }} brani
         </span>
       </div>
     </div>
 
-    <!-- ─────────────── TRACK LIST ─────────────── -->
-    <section class="tracks-section">
+    <!-- ─────────────── SCENE VIEWER ─────────────── -->
+    <section class="scene-viewer-section" [class.is-open]="isSceneViewerOpen">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="pi pi-list"></i>
-          Brani del progetto
+          <i class="pi pi-images"></i>
+          Scene
         </h2>
+        <div class="header-actions">
+          <p-buttonGroup>
+            <p-button
+              [outlined]="sceneViewMode !== 'row'"
+              size="small"
+              (onClick)="sceneViewMode = 'row'"
+              pTooltip="Vista a riga"
+            >
+              <i class="material-icons">view_array</i>
+            </p-button>
+            <p-button
+              [outlined]="sceneViewMode !== 'grid'"
+              size="small"
+              (onClick)="sceneViewMode = 'grid'"
+              pTooltip="Vista a griglia"
+            >
+              <i class="material-icons">grid_view</i>
+            </p-button>
+          </p-buttonGroup>
+
+          <p-button
+            [icon]="isSceneViewerOpen ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+            [text]="true"
+            size="small"
+            (onClick)="toggleSceneViewer()"
+            [label]="isSceneViewerOpen ? 'Chiudi' : 'Apri'"
+          />
+        </div>
+      </div>
+
+      <div class="scene-viewer-container" [class.collapsed]="!isSceneViewerOpen">
+        <div class="scene-list-wrapper" [class.grid-mode]="sceneViewMode === 'grid'">
+          <!-- Add Scene Card -->
+          <div class="scene-card add-card" (click)="openAddSceneDialog()">
+            <i class="pi pi-plus"></i>
+            <span>Nuova Scena</span>
+          </div>
+
+          <!-- Scene Cards -->
+          @for (scene of project.scenes; track scene.id) {
+            <div
+              class="scene-card"
+              [class.active]="selectedScene?.id === scene.id"
+              (click)="selectScene(scene)"
+            >
+              <div class="scene-card-body">
+                <h3 class="scene-card-name">{{ scene.name }}</h3>
+                <span class="scene-card-info">
+                  <i class="pi pi-music"></i>
+                  {{ scene.tracks.length }} brani
+                </span>
+              </div>
+              <div class="scene-card-footer">
+                <p-button
+                  [label]="selectedScene?.id === scene.id ? 'Selezionata' : 'Seleziona'"
+                  [severity]="selectedScene?.id === scene.id ? 'primary' : 'secondary'"
+                  [outlined]="selectedScene?.id !== scene.id"
+                  size="small"
+                  (onClick)="selectScene(scene); $event.stopPropagation()"
+                />
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────── SELECTED SCENE TRACKS ─────────────── -->
+    <section class="tracks-section">
+      <div class="section-header">
+        <div class="section-title-wrapper">
+          <h2 class="section-title">
+            <i class="pi pi-list"></i>
+            Brani della scena: {{ selectedScene?.name || 'Nessuna scena' }}
+          </h2>
+          @if (selectedScene?.description) {
+            <p class="section-subtitle">{{ selectedScene?.description }}</p>
+          }
+        </div>
         <p-button
           icon="pi pi-plus"
           label="Aggiungi tracce"
           size="small"
           (onClick)="openAddTracksDialog()"
+          [disabled]="!selectedScene"
         />
       </div>
 
       <div class="track-list">
-        @for (track of project.tracks; track track.id; let i = $index) {
-          <div class="track-row">
-            <span class="track-index">{{ i + 1 }}</span>
-            <div class="track-color-dot" [style.background]="track.color"></div>
-            <span class="track-name">{{ track.name }}</span>
+        @if (selectedScene && selectedScene.tracks.length > 0) {
+          @for (track of selectedScene.tracks; track track.id; let i = $index) {
+            <div class="track-row">
+              <span class="track-index">{{ i + 1 }}</span>
+              <div class="track-color-dot" [style.background]="track.color"></div>
+              <span class="track-name">{{ track.name }}</span>
+            </div>
+          }
+        } @else {
+          <div class="empty-state">
+            <i class="pi pi-info-circle"></i>
+            <p>Nessun brano in questa scena.</p>
           </div>
         }
       </div>
     </section>
   </div>
+
+  <!-- ─────────────── ADD SCENE DIALOG ─────────────── -->
+  <p-dialog
+    [(visible)]="showAddSceneDialog"
+    header="Crea nuova scena"
+    [modal]="true"
+    [closable]="true"
+    [style]="{ width: '400px' }"
+    [draggable]="false"
+    [resizable]="false"
+  >
+    <div class="dialog-form">
+      <div class="form-field">
+        <label for="sceneName">Nome Scena</label>
+        <input
+          id="sceneName"
+          type="text"
+          pInputText
+          [(ngModel)]="newSceneName"
+          placeholder="es. Introduzione"
+        />
+      </div>
+      <div class="form-field">
+        <label for="sceneDesc">Descrizione</label>
+        <input
+          id="sceneDesc"
+          type="text"
+          pInputText
+          [(ngModel)]="newSceneDesc"
+          placeholder="es. Atmosfera iniziale..."
+        />
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        label="Annulla"
+        [text]="true"
+        severity="secondary"
+        (onClick)="showAddSceneDialog = false"
+      />
+      <p-button
+        label="Crea"
+        icon="pi pi-check"
+        (onClick)="confirmAddScene()"
+        [disabled]="!newSceneName.trim()"
+      />
+    </ng-template>
+  </p-dialog>
 
   <!-- ─────────────── ADD TRACKS DIALOG ─────────────── -->
   <p-dialog
