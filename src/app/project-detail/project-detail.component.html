@@ -121,14 +121,10 @@
         />
       </div>
 
-      <div class="track-list">
+      <div class="track-grid">
         @if (selectedScene && selectedScene.tracks.length > 0) {
-          @for (track of selectedScene.tracks; track track.id; let i = $index) {
-            <div class="track-row">
-              <span class="track-index">{{ i + 1 }}</span>
-              <div class="track-color-dot" [style.background]="track.color"></div>
-              <span class="track-name">{{ track.name }}</span>
-            </div>
+          @for (track of selectedScene.tracks; track track.id) {
+            <app-track-card [track]="track"></app-track-card>
           }
         } @else {
           <div class="empty-state">

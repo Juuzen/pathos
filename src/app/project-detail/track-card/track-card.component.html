@@ -1,0 +1,51 @@
+<div class="track-card" [class.is-playing]="playbackState === 'playing'">
+  <!-- Hidden audio element for playback -->
+  <audio #audioPlayer preload="metadata"></audio>
+
+  <!-- Animated Border Wrapper -->
+  <div class="animated-border"></div>
+
+  <div class="track-card-content">
+    <div class="track-header">
+      <h4 class="track-name" [title]="track.name">{{ track.name }}</h4>
+    </div>
+
+    <div class="track-body">
+      <div class="track-timer">
+        <span class="time-current">{{ formatTime(currentTime) }}</span>
+        <span class="time-separator">/</span>
+        <span class="time-total">{{ formatTime(duration) }}</span>
+      </div>
+    </div>
+
+    <div class="track-footer">
+      <div class="controls-wrapper">
+        @if (playbackState === 'stopped' || playbackState === 'paused') {
+          <p-button
+            icon="pi pi-play"
+            [rounded]="true"
+            size="small"
+            severity="success"
+            (onClick)="play()"
+          ></p-button>
+        } @else {
+          <p-button
+            icon="pi pi-pause"
+            [rounded]="true"
+            size="small"
+            severity="warn"
+            (onClick)="pause()"
+          ></p-button>
+
+          <p-button
+            icon="pi pi-stop"
+            [rounded]="true"
+            size="small"
+            severity="secondary"
+            (onClick)="stop()"
+          ></p-button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

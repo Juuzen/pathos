@@ -1,0 +1,138 @@
+:host {
+  display: block;
+  /* Adjust width to be part of a grid layout */
+}
+
+.track-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  background: #12151c;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  overflow: hidden;
+}
+
+.track-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.animated-border {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  pointer-events: none;
+  z-index: 1;
+  transition: border-color 0.3s ease;
+}
+
+.track-card.is-playing .animated-border {
+  border-color: #6366f1;
+  animation: pulse-border 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes pulse-border {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+.track-card-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.25rem;
+  background: #12151c;
+  border-radius: 10px; /* slightly smaller than wrapper to allow border showing */
+  border: 1px solid #1e2330;
+}
+
+.track-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: auto;
+}
+
+.track-color-ring {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.track-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.track-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.track-timer {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-variant-numeric: tabular-nums;
+  font-family: monospace;
+}
+
+.time-current {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.time-separator {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.time-total {
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.track-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+}
+
+.controls-wrapper {
+  display: flex;
+  gap: 0.75rem;
+  background: #1a1d27;
+  padding: 0.5rem;
+  border-radius: 999px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}

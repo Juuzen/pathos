@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 
 import { ProjectService } from '../services/project.service';
 import { Project, Scene } from '../models/project.model';
+import { TrackCardComponent } from './track-card/track-card.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -21,6 +22,7 @@ import { Project, Scene } from '../models/project.model';
     DialogModule,
     InputTextModule,
     FormsModule,
+    TrackCardComponent,
   ],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css',
@@ -114,10 +116,7 @@ export class ProjectDetailComponent implements OnInit {
 
   confirmDialog(): void {
     if (this.project && this.queuedFiles.length > 0) {
-      this.projectService.addTracksToProject(
-        this.project.id,
-        this.queuedFiles.map((f) => f.name),
-      );
+      this.projectService.addTracksToProject(this.project.id, this.queuedFiles);
     }
     this.showAddTracksDialog = false;
   }
